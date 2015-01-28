@@ -7,6 +7,9 @@ class HTMLGetter():
         print ("init")
 
     def getHTMLFromURL(self, url):
-        return urllib.request.urlopen(url).read()
 
+        response = urllib.request.urlopen(url)
+        the_page = response.read()
+        text = the_page.decode("iso-8859-1")
+        return text
 
