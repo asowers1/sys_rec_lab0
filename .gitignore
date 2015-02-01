@@ -6,3 +6,5 @@ build/
 
 .idea/workspace.xml
 __pycache__/
+
+.idea/
