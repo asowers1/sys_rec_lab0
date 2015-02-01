@@ -3,6 +3,8 @@ __author__ = 'andrew'
 import HTMLGetter
 import SoupMachine
 import MLStripper
+import nltk
+import nltk.data
 import re
 class Spider():
     html        = None
@@ -14,7 +16,8 @@ class Spider():
         htmlGetter = HTMLGetter.HTMLGetter()
         html = htmlGetter.getHTMLFromURL("http://archive.wired.com/wired/archive/12.10/tail_pr.html")
         self.soupMachine = SoupMachine.SoupMachine(html)
-        print(self.removeComments(self.removeHtmlComments(self.soupMachine.getAllText())))
+        strippedhtml = self.removeComments(self.removeHtmlComments(self.soupMachine.getAllText()))
+        print(nltk.word_tokenize(strippedhtml))
 
     def removeComments(self,string):
         string = re.sub(re.compile("/\*.*?\*/",re.DOTALL ) ,"" ,string) # remove all occurance streamed comments (/*COMMENT */) from string
