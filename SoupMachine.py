@@ -8,7 +8,7 @@ class SoupMachine():
     def __init__(self, html_doc):
         self.soup = BeautifulSoup(html_doc)
     def getTitle(self):
-        return self.soup.title
+        return self.soup.title.string
     def getTitleName(self):
         return self.soup.title.name
     def getAllText(self):

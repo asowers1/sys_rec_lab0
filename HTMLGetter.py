@@ -3,8 +3,6 @@ import urllib.request
 
 
 class HTMLGetter():
-    def __init__(self):
-        print ("init")
 
     def getHTMLFromURL(self, url):
 

@@ -2,11 +2,11 @@ __author__ = 'andrew'
 
 import HTMLGetter
 import SoupMachine
-import MLStripper
 from collections import defaultdict
 import nltk
 import nltk.data
 import re
+
 class Spider():
     html        = None
     soupMachine = None
@@ -17,10 +17,15 @@ class Spider():
         htmlGetter = HTMLGetter.HTMLGetter()
         html = htmlGetter.getHTMLFromURL("http://archive.wired.com/wired/archive/12.10/tail_pr.html")
         self.soupMachine = SoupMachine.SoupMachine(html)
+        title = self.soupMachine.getTitle()
+        print(title)
+
         strippedhtml = self.removePunc(self.removeComments(self.removeHtmlComments(self.soupMachine.getAllText())))
         tokens = nltk.word_tokenize(strippedhtml)
+        print("tokens: " + str(len(tokens)))
         tokens = self.removeUpperFromTokenList(tokens)
-        print(tokens)
+        dict = self.convertListToDictionary(tokens)
+        print(dict)
 
     def removeComments(self, string):
         string = re.sub(re.compile("/\*.*?\*/",re.DOTALL ) ,"" ,string) # remove all occurance streamed comments (/*COMMENT */) from string
@@ -28,11 +33,11 @@ class Spider():
         return string
 
     def removeHtmlComments(self, string):
-        string = re.sub(re.compile("<!--.*?-->",re.DOTALL ) ,"" ,string) # remove all occurance streamed comments (/*COMMENT */) from string
+        string = re.sub(re.compile("<!--.*?-->",re.DOTALL ) ,"" ,string) # remove all occurance HTML comments (<!-- -->) from string
         return string
 
     def removePunc(self, string):
-        string = re.sub(re.compile("[^'\w\s]",re.DOTALL ) ,"" ,string) # remove all occurance streamed comments (/*COMMENT */) from string
+        string = re.sub(re.compile("[^-'\w\s]",re.DOTALL ) ,"" ,string) # remove all occurances punctuation
         return string
 
     def removeUpperFromTokenList(self, tokens):
