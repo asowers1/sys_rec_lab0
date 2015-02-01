@@ -3,6 +3,7 @@ __author__ = 'andrew'
 import HTMLGetter
 import SoupMachine
 import MLStripper
+from collections import defaultdict
 import nltk
 import nltk.data
 import re
@@ -39,3 +40,10 @@ class Spider():
         for token in tokens:
             newList.append(token.lower())
         return newList
+
+    def convertListToDictionary(self, list):
+        dictionary = defaultdict(int)
+        for token in list:
+            dictionary[token] += 1
+        return dictionary
+
