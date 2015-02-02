@@ -6,6 +6,7 @@ from collections import defaultdict
 import nltk
 import nltk.data
 import re
+from nltk.stem import *
 
 class Spider():
     html        = None
@@ -18,14 +19,26 @@ class Spider():
         html = htmlGetter.getHTMLFromURL("http://archive.wired.com/wired/archive/12.10/tail_pr.html")
         self.soupMachine = SoupMachine.SoupMachine(html)
         title = self.soupMachine.getTitle()
-        print(title)
+        print("Title of Page: " + title)
 
         strippedhtml = self.removePunc(self.removeComments(self.removeHtmlComments(self.soupMachine.getAllText())))
         tokens = nltk.word_tokenize(strippedhtml)
-        print("tokens: " + str(len(tokens)))
-        tokens = self.removeUpperFromTokenList(tokens)
-        dict = self.convertListToDictionary(tokens)
-        print(dict)
+
+        print("Number of Tokens: " + str(len(tokens)))
+
+        terms = self.convertListToDictionary(tokens)
+        print("Number of Terms: " + str(len(terms)))
+
+        #Lowercase all terms
+        self.removeUpperFromObject(tokens)
+
+        lowerTerms = self.convertListToDictionary(tokens)
+
+        print('Number of Terms after lowercase: ' + str(len(lowerTerms)))
+
+        porterTerms = self.convertToPorterTerms(lowerTerms)
+        print('Number of Terms after Porter Stemmer: ' + str(len(set(porterTerms))))
+
 
     def removeComments(self, string):
         string = re.sub(re.compile("/\*.*?\*/",re.DOTALL ) ,"" ,string) # remove all occurance streamed comments (/*COMMENT */) from string
@@ -37,14 +50,12 @@ class Spider():
         return string
 
     def removePunc(self, string):
-        string = re.sub(re.compile("[^-'\w\s]",re.DOTALL ) ,"" ,string) # remove all occurances punctuation
+        string = re.sub(re.compile("[^-.\"'\w\s]",re.DOTALL ) ,"" ,string) # remove all occurances punctuation
         return string
 
-    def removeUpperFromTokenList(self, tokens):
-        newList = list()
-        for token in tokens:
-            newList.append(token.lower())
-        return newList
+    def removeUpperFromObject(self, objects):
+        for i in range(len(objects)):
+            objects[i] = objects[i].lower()
 
     def convertListToDictionary(self, list):
         dictionary = defaultdict(int)
@@ -52,3 +63,8 @@ class Spider():
             dictionary[token] += 1
         return dictionary
 
+    def convertToPorterTerms(self, terms):
+        porterTerms = []
+        for i in terms:
+            porterTerms.append(PorterStemmer().stem_word(i))
+        return porterTerms
