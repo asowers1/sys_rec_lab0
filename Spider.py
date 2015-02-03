@@ -16,12 +16,13 @@ class Spider():
 
     def __init__(self):
         htmlGetter = HTMLGetter.HTMLGetter()
-        html = htmlGetter.getHTMLFromURL("http://archive.wired.com/wired/archive/12.10/tail_pr.html")
+        html = htmlGetter.getHTMLFromURL("http://www.amazon.com/The-Mountain-Three-Short-Sleeve/dp/B002HJ377A")
         self.soupMachine = SoupMachine.SoupMachine(html)
         title = self.soupMachine.getTitle()
         print("Title of Page: " + title)
+        self.soupMachine.removeJunk()
 
-        strippedhtml = self.removePunc(self.removeComments(self.removeHtmlComments(self.soupMachine.getAllText())))
+        strippedhtml = self.removePunc(self.removeComments(self.removeHtmlComments(self.soupMachine.getText())))
         tokens = nltk.word_tokenize(strippedhtml)
 
         print("Number of Tokens: " + str(len(tokens)))

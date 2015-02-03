@@ -13,3 +13,8 @@ class SoupMachine():
         return self.soup.title.name
     def getAllText(self):
         return self.soup.get_text()
+    def getText(self):
+        return self.soup.getText()
+    def removeJunk(self):
+        for script in self.soup(["script", "style"]):
+            script.extract()    # rip it out
